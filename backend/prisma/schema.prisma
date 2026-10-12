@@ -1,0 +1,109 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  EMPLOYEE
+  DIRECTOR
+  ACCOUNTS
+}
+
+enum VoucherStatus {
+  DRAFT
+  PENDING_APPROVAL
+  APPROVED
+  REJECTED
+}
+
+enum VoucherEventType {
+  CREATED
+  UPDATED
+  SUBMITTED
+  APPROVED
+  REJECTED
+}
+
+model User {
+  id           String           @id @default(cuid())
+  email        String           @unique @db.VarChar(191)
+  fullName     String           @db.VarChar(191)
+  employeeId   String?          @db.VarChar(64)
+  role         UserRole
+  passwordHash String           @db.VarChar(255)
+  active       Boolean          @default(true)
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  vouchers     Voucher[]        @relation("VoucherOwner")
+  events       VoucherEvent[]
+  sessions     RefreshSession[]
+
+  @@index([role, active])
+}
+
+model Voucher {
+  id                    String         @id @default(cuid())
+  voucherNumber         String         @unique @db.VarChar(32)
+  voucherDate           DateTime       @default(now())
+  expenseDate           DateTime
+  department            String         @db.VarChar(120)
+  title                 String         @db.VarChar(191)
+  category              String         @db.VarChar(120)
+  description           String         @db.Text
+  amount                Decimal        @db.Decimal(12, 2)
+  employeeName          String         @db.VarChar(191)
+  employeeIdSnapshot    String?        @db.VarChar(64)
+  employeeSignaturePath String?        @db.VarChar(512)
+  directorSignaturePath String?        @db.VarChar(512)
+  status                VoucherStatus  @default(DRAFT)
+  rejectionReason       String?        @db.Text
+  approvalDate          DateTime?
+  createdAt             DateTime       @default(now())
+  updatedAt             DateTime       @updatedAt
+  createdById           String
+  createdBy             User           @relation("VoucherOwner", fields: [createdById], references: [id], onDelete: Restrict)
+  events                VoucherEvent[]
+
+  @@index([createdById, status, createdAt])
+  @@index([status, createdAt])
+  @@index([department, category])
+  @@index([expenseDate])
+  @@index([amount])
+  @@index([employeeName])
+}
+
+model VoucherCounter {
+  year         Int @id
+  nextSequence Int @default(1)
+}
+
+model VoucherEvent {
+  id         String           @id @default(cuid())
+  voucherId  String
+  actorId    String
+  type       VoucherEventType
+  fromStatus VoucherStatus?
+  toStatus   VoucherStatus?
+  details    String?          @db.Text
+  createdAt  DateTime         @default(now())
+  voucher    Voucher          @relation(fields: [voucherId], references: [id], onDelete: Cascade)
+  actor      User             @relation(fields: [actorId], references: [id], onDelete: Restrict)
+
+  @@index([voucherId, createdAt])
+}
+
+model RefreshSession {
+  id        String    @id @default(cuid())
+  tokenHash String    @unique @db.Char(64)
+  userId    String
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, expiresAt, revokedAt])
+}

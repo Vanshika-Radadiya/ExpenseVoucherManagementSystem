@@ -1,0 +1,268 @@
+Expense Voucher Management System
+Full Stack Developer Internship Assignment
+1. Introduction
+ABC Company currently manages employee expense vouchers manually. Employees fill
+out expense vouchers, obtain approval from the Director, and submit them to the
+Accounts Team for reimbursement. This manual process is time-consuming, difficult to
+track, and lacks transparency.
+The objective of this assignment is to develop a web-based Expense Voucher
+Management System that digitizes the complete voucher creation, approval, and
+tracking process.
+The application should allow employees to create expense vouchers, enable the
+Director to review and approve or reject them, and allow the Accounts Team to monitor
+all vouchers for payment processing.
+This assignment is designed to evaluate a candidate's ability to build a real-world fullstack application, including frontend development, backend development,
+authentication, authorization, database design, REST APIs, file uploads, validation, and
+clean software architecture.
+2. Objective
+The application should:
+• Replace the manual voucher approval process.
+• Allow employees to submit expense reimbursement requests.
+• Allow the Director to approve or reject vouchers.
+• Allow the Accounts Team to view all vouchers for reimbursement processing.
+• Allow employees to track the status of their submitted vouchers.
+• Maintain a centralized repository of all vouchers.
+• Ensure only authorized users can access relevant information based on their
+role.
+3. User Roles
+The application must support the following three user roles.
+3.1 Employee
+Employees are responsible for creating and submitting expense vouchers.
+Employees should be able to:
+• Login to the application.
+• Create a new voucher.
+• Save a voucher as Draft.
+• Submit a voucher for approval.
+• Edit or delete a voucher while it is in Draft status.
+• Upload their signature (image upload).
+• View only the vouchers created by themselves.
+• View complete voucher details.
+• Track the current status of their vouchers.
+Employees should not be able to:
+• View vouchers created by other employees.
+• Approve or reject vouchers.
+• Modify submitted, approved, or rejected vouchers.
+3.2 Director (Admin)
+The Director is responsible for approving or rejecting expense vouchers.
+Director should be able to:
+• Login to the application.
+• View all vouchers.
+• View pending approval requests.
+• Search, filter, and sort vouchers.
+• View voucher details.
+• Approve vouchers.
+• Reject vouchers.
+• Upload their signature while approving a voucher.
+• Provide a rejection reason while rejecting a voucher.
+Director should not be able to:
+• Modify the details entered by the employee.
+3.3 Accounts Team
+The Accounts Team is responsible for monitoring expense vouchers and processing
+reimbursements.
+Accounts Team should be able to:
+• Login to the application.
+• View all vouchers across the organization.
+• Search, filter, and sort vouchers(Bonus Point).
+• View voucher details.
+• View employee and director signatures.
+• View approval status.
+• Download or print vouchers (optional).
+Accounts Team should not be able to:
+• Create vouchers.
+• Edit vouchers.
+• Delete vouchers.
+• Approve or reject vouchers.
+4. Voucher Workflow
+Every voucher should follow the workflow below:
+Draft
+ │
+ ▼
+Submitted
+ │
+ ▼
+Pending Approval
+ │
+ ├────────────► Rejected
+ │ │
+ │ ▼
+ │ Employee can view rejection reason
+ │
+ ▼
+Approved
+ │
+ ▼
+Visible to Accounts Team for reimbursement processing
+5. Voucher Details
+Each voucher should contain the following information.
+Basic Information
+• Voucher Number
+• Voucher Date
+• Expense Date
+• Department Name
+• Expense Title
+• Expense Category
+• Expense Description
+• Amount
+Employee Information
+• Employee Name
+• Employee ID (Optional)
+• Employee Signature (Image Upload)
+Approval Information
+• Current Status
+• Director Signature (Image Upload)
+• Approval Date
+• Rejection Reason (if rejected)
+Audit Information
+• Created Date
+• Last Updated Date
+6. Functional Requirements
+Authentication
+The application shall:
+• Allow users to log in securely.
+• Restrict access based on user roles.
+• Prevent unauthorized access to protected pages.
+• Maintain authenticated user sessions.
+Employee Module
+Employees shall be able to:
+• Create vouchers.
+• Save vouchers as Draft.
+• Submit vouchers for approval.
+• Edit Draft vouchers.
+• Delete Draft vouchers.
+• Upload signature images.
+• View all vouchers created by themselves.
+• View voucher details.
+• Track approval status.
+Director Module
+The Director shall be able to:
+• View all vouchers.
+• View pending approvals.
+• Search vouchers.
+• Filter vouchers.
+• Sort vouchers.
+• View voucher details.
+• Approve vouchers.
+• Reject vouchers.
+• Upload approval signature.
+• Enter rejection remarks.
+Accounts Module
+The Accounts Team shall be able to:
+• View all vouchers.
+• Search vouchers.
+• Filter vouchers.
+• Sort vouchers.
+• View voucher details.
+• View approval status.
+• View employee and director signatures.
+7. Search & Filter(Bonus Point)
+The application should support searching and filtering by:
+• Voucher Number
+• Employee Name
+• Department
+• Expense Category
+• Status
+• Date Range
+• Amount Range
+8. Dashboard
+Employee Dashboard
+The dashboard should display:
+• Total Vouchers
+• Draft Vouchers
+• Pending Approval
+• Approved Vouchers
+• Rejected Vouchers
+• Total Amount Claimed
+Employees should only see vouchers created by themselves.
+Director Dashboard
+The dashboard should display:
+• Pending Approval Count
+• Approved Today
+• Rejected Today
+• Total Pending Amount
+• Recent Voucher Activity
+The Director should be able to view every voucher in the system.
+Accounts Dashboard
+The dashboard should display:
+• Total Vouchers
+• Pending Approval
+• Approved Vouchers
+• Rejected Vouchers
+• Total Approved Expense Amount
+• Recent Approved Vouchers
+The Accounts Team should be able to view every voucher in the system.
+9. Validation Rules
+The application shall enforce the following validations:
+• Department is mandatory.
+• Expense Title is mandatory.
+• Expense Date is mandatory.
+• Amount is mandatory.
+• Amount must be greater than zero.
+• Employee Signature is mandatory before submission.
+• Director Signature is mandatory before approval.
+• Rejection Reason is mandatory if a voucher is rejected.
+10. Business Rules
+1. Every voucher must have a unique Voucher Number.
+2. Voucher Numbers should be generated automatically.
+3. Every new voucher should initially be saved as Draft.
+4. Employees may edit or delete vouchers only while they are in Draft status.
+5. Once submitted, vouchers become read-only for employees.
+6. Only the Director can approve or reject submitted vouchers.
+7. Approved vouchers become read-only.
+8. Rejected vouchers must include a rejection reason.
+9. Employees can only view vouchers created by themselves.
+10. The Director can view every voucher in the organization.
+11. The Accounts Team can view every voucher in the organization.
+12. Every submitted voucher must include the employee's signature.
+13. Every approved voucher must include the Director's signature.
+11. Suggested Screens
+Authentication
+• Login
+Employee
+• Dashboard
+• Create Voucher
+• My Vouchers
+• Voucher Details
+• Edit Draft Voucher
+Director
+• Dashboard
+• Pending Approvals
+• All Vouchers
+• Voucher Details
+Accounts Team
+• Dashboard
+• All Vouchers
+• Voucher Details
+12. Technical Requirements
+Candidates are free to choose their preferred technology stack.
+Minimum expectations:
+Frontend
+• React (Preferred)
+• Responsive Design
+• Form Validation
+• Protected Routes
+Backend
+• Node.js
+• Express.js or NestJS
+• RESTful APIs
+• JWT Authentication
+• Proper Error Handling
+Database
+• PostgreSQL or MySQL(can use any other database as well)
+File Upload
+Support image upload for:
+• Employee Signature
+• Director Signature
+13. Submission Requirements
+Candidates must submit:
+• GitHub repository containing the complete source code.
+• README file with:
+o Project setup instructions
+o Database schema explanation
+o API documentation
+o Assumptions made during development
+• Database schema or migration files.
+• .env.example file.
+• Screenshots or a short demo video (optional).
+NOTE: - This document and the business requirements contained herein are
+confidential and proprietary to Prachay Securities Private Limited and are shared solely
+for the purpose of evaluating candidates for the Full Stack Developer Internship.
