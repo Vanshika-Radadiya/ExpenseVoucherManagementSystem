@@ -33,6 +33,8 @@ Apply the checked-in database migrations:
 npm run db:deploy
 ```
 
+Create user accounts with the seed script. Supply `SEED_USERS_JSON` temporarily through your shell or a secret manager. Each account needs `email`, `fullName`, `role` (`EMPLOYEE`, `DIRECTOR`, or `ACCOUNTS`), and a password of at least 12 characters; `employeeId` is optional. There is no public registration endpoint.
+
 Start the backend from the `backend` directory:
 
 ```bash
@@ -53,9 +55,86 @@ npm run dev
 
 Vite serves the frontend at `http://localhost:5173` and proxies `/api` requests to `http://localhost:3000`. To use a different API origin, configure `VITE_API_BASE_URL` in the frontend environment. Sign in with an account created by the backend administrator.
 
+## Demo Walkthrough
+
+Open `http://localhost:5173` after starting both apps. These credentials are for the local demo only.
+
+![VoucherDesk sign-in screen](docs/screenshots/1_employee_login.png)
+
+| Role     | Email                       | Password            |
+| -------- | --------------------------- | ------------------- |
+| Employee | `demo.employee@example.com` | `DemoEmployee2026!` |
+| Director | `demo.director@example.com` | `DemoDirector2026!` |
+| Accounts | `demo.accounts@example.com` | `DemoAccounts2026!` |
+
+### 1. Employee creates and submits a voucher
+
+Sign in as Employee to see personal totals and recent vouchers.
+
+![Employee overview with voucher totals and recent activity](docs/screenshots/2_emp_overview.png)
+
+Choose **Create voucher** and enter the expense details. The blank form is shown first, followed by an example with the fields completed.
+
+![Blank new voucher form](docs/screenshots/3_create_voucher.png)
+
+![New voucher form with expense details filled in](docs/screenshots/4_create_voucher.png)
+
+Save the voucher as a draft, open its details, upload the employee signature, and choose **Submit for approval**. The detail screen shows the signed voucher ready to submit; after submission, the employee overview shows it as pending approval.
+
+![Employee voucher details with signature and submit action](docs/screenshots/5_submit_for_approval.png)
+
+![Employee overview showing the submitted voucher as pending approval](docs/screenshots/6_overview.png)
+
+### 2. Director reviews submitted vouchers
+
+Sign in as Director. The approval overview summarizes pending requests and recent activity. Open **Approval queue** and select the submitted voucher to inspect its details and audit trail.
+
+![Director approval overview](docs/screenshots/7_director_overview.png)
+
+![Director approval queue with the submitted voucher](docs/screenshots/8_approval_queue.png)
+
+![Director view of the submitted voucher and its audit trail](docs/screenshots/9_review_voucher.png)
+
+The Director can approve by uploading a signature, or reject by entering a reason. The decision controls are shown below. The all-vouchers view then shows the voucher's resulting status.
+
+![Director decision controls for approving or rejecting a voucher](docs/screenshots/10_review_voucher.png)
+
+![Director all-vouchers list showing the approved voucher](docs/screenshots/11_all_vouchers.png)
+
+### 3. Accounts reviews approved expenses
+
+Sign in as Accounts to review approved expenses across the organization. The overview summarizes voucher totals and recently approved expenses; payment processing itself is outside this system.
+
+![Accounts overview with approved expense totals and recent vouchers](docs/screenshots/12_admin_overview.png)
+
+Open **All vouchers** for the organization-wide list. Accounts can view vouchers across the organization but cannot perform workflow actions.
+
+![Accounts all-vouchers list](docs/screenshots/13_admin_all_voucher.png)
+
+The normal status path is `DRAFT` → `PENDING_APPROVAL` → `APPROVED` or `REJECTED`. Approved and rejected vouchers are terminal and cannot be edited or resubmitted.
+
+### Useful commands
+
+Run these from the relevant app directory:
+
+| Backend             | Purpose                       |
+| ------------------- | ----------------------------- |
+| `npm run build`     | Build and type-check the API  |
+| `npm test`          | Run backend unit tests        |
+| `npm run test:e2e`  | Run backend end-to-end tests  |
+| `npm run lint`      | Lint backend source and tests |
+| `npm run db:studio` | Open Prisma Studio            |
+
+| Frontend          | Purpose                           |
+| ----------------- | --------------------------------- |
+| `npm run build`   | Type-check and build the frontend |
+| `npm test`        | Run frontend tests                |
+| `npm run lint`    | Lint the frontend                 |
+| `npm run preview` | Preview a production build        |
+
 ## Database Schema
 
-The schema is defined in [`backend/prisma/schema.prisma`](backend/prisma/schema.prisma).
+The schema is defined in [`backend/prisma/schema.prisma`](backend/prisma/schema.prisma). MySQL stores voucher amounts as `DECIMAL(12,2)`; timestamps are stored as dates, and Prisma generates CUID identifiers.
 
 | Model            | Purpose and relationships                                                                                                                                                                                     |
 | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -71,7 +150,7 @@ The voucher workflow is `DRAFT` → `PENDING_APPROVAL` → `APPROVED` or `REJECT
 
 ## API Documentation
 
-All routes use the `/api` prefix. The default base URL is `http://localhost:3000/api`. JSON request validation rejects unknown fields and transforms validated input.
+The API details here follow [`backend/output.md`](backend/output.md). All routes use the `/api` prefix. The default base URL is `http://localhost:3000/api`. JSON request validation rejects unknown fields and transforms validated input.
 
 ### Authentication
 
